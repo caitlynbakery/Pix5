@@ -12,6 +12,8 @@ function App() {
 
   const [currentWord, setCurrentWorld] = useState();
   const [flowerImages, setImages] = useState([]);
+  const [searchWord, setSearchWord] = useState("");
+  const [showImage, setShowImage] = useState(false);
 
   function buttonClick(){
     setCurrentWorld(randomWords());
@@ -25,7 +27,13 @@ function App() {
         setImages(json.hits);
         console.log(json.hits);
       })
+      setShowImage(true);
+  }
 
+  function filterSearch(event){
+    const value = event.target.value;
+    console.log(value);
+    setSearchWord(value);
   }
   return (
     <div>
@@ -38,12 +46,30 @@ function App() {
       <Row>
       <button className="btn btn-primary" onClick={searchButton}>show images</button>
       </Row>
-      <Row>
-        {flowerImages.map((image, index) => (
-          <img src={image.previewURL} key={index}/>
-        ))}
-        
+
+      {/* show search box only if show image button is pressed */}
+      {showImage && 
+        <div> 
+        <Row className="pt-2">
+          <input type="text" onChange={filterSearch}/>
+        </Row>
+        <Row>
+            {flowerImages.map((image, index) => (
+              <div>
+              {image.tags.includes(searchWord) && 
+          
+              <Card className="mr-3 mt-3" key={index}>
+                <Card.Text>
+                  {image.tags}
+                </Card.Text>
+                <Card.Img src={image.previewURL} />
+              </Card>
+              }
+            </div>
+           ))
+          }
       </Row>
+      </div>}
       </Container>
     </div>
   );
